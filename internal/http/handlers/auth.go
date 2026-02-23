@@ -36,6 +36,7 @@ func (h *AuthHandler) Login(c echo.Context) error {
 			"id":       user.ID,
 			"uuid":     user.UserUUID,
 			"username": user.Username,
+			"role":     user.Role,
 		},
 	})
 }

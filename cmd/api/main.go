@@ -30,7 +30,7 @@ func main() {
 	billingRepo := postgres.NewBillingRepository(pool)
 	orderRepo := postgres.NewOrderRepository(pool)
 
-	authService := service.NewAuthService(userRepo, cfg.JWTSecret, cfg.JWTIssuer, cfg.JWTTTLMinutes)
+	authService := service.NewAuthService(userRepo, cfg.JWTSecret, cfg.JWTIssuer)
 	patientService := service.NewPatientService(patientRepo)
 	billingService := service.NewBillingService(billingRepo)
 	orderService := service.NewOrderService(orderRepo)

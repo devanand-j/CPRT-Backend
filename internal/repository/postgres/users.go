@@ -19,14 +19,16 @@ func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
 
 func (r *UserRepository) GetByUsername(ctx context.Context, username string) (domain.User, error) {
 	const query = `
-		SELECT id, user_uuid, username, email, phone, password_hash, status, created_at
+		SELECT id, user_uuid, username, email, phone, password_hash, role, status, created_at
 		FROM users
 		WHERE username = $1
 	`
 	var user domain.User
+	var role string
 	row := r.pool.QueryRow(ctx, query, username)
-	if err := row.Scan(&user.ID, &user.UserUUID, &user.Username, &user.Email, &user.Phone, &user.PasswordHash, &user.Status, &user.CreatedAt); err != nil {
+	if err := row.Scan(&user.ID, &user.UserUUID, &user.Username, &user.Email, &user.Phone, &user.PasswordHash, &role, &user.Status, &user.CreatedAt); err != nil {
 		return domain.User{}, errors.New("user not found")
 	}
+	user.Role = domain.Role(role)
 	return user, nil
 }

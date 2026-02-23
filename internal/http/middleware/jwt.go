@@ -27,7 +27,32 @@ func JWTAuth(secret string) echo.MiddlewareFunc {
 				return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
 			}
 
+			if claims, ok := token.Claims.(jwt.MapClaims); ok {
+				c.Set("user_uuid", claims["sub"])
+				c.Set("user_role", claims["role"])
+			}
+
 			return next(c)
+		}
+	}
+}
+
+func RequireRole(roles ...string) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			userRole := c.Get("user_role")
+			if userRole == nil {
+				return echo.NewHTTPError(http.StatusForbidden, "access denied")
+			}
+
+			roleStr := userRole.(string)
+			for _, r := range roles {
+				if roleStr == r {
+					return next(c)
+				}
+			}
+
+			return echo.NewHTTPError(http.StatusForbidden, "insufficient permissions")
 		}
 	}
 }

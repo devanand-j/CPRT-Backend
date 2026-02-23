@@ -2,6 +2,16 @@ package domain
 
 import "time"
 
+type Role string
+
+const (
+	RoleSuperAdmin   Role = "SUPER_ADMIN"
+	RoleAdmin        Role = "ADMIN"
+	RoleDoctor       Role = "DOCTOR"
+	RoleReceptionist Role = "RECEPTIONIST"
+	RoleTechnician   Role = "TECHNICIAN"
+)
+
 type User struct {
 	ID           int64
 	UserUUID     string
@@ -9,6 +19,7 @@ type User struct {
 	Email        string
 	Phone        string
 	PasswordHash string
+	Role         Role
 	Status       string
 	CreatedAt    time.Time
 }
