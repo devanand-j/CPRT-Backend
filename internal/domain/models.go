@@ -40,6 +40,7 @@ type Patient struct {
 type PatientSearchResult struct {
 	PatientID   string `json:"patient_id"`
 	FullName    string `json:"full_name"`
+	OPIPNo      string `json:"op_ip_no"`
 	PhoneNo     string `json:"phone_no"`
 	CreatedAt   string `json:"created_at"`
 	CreatedBy   string `json:"created_by"`

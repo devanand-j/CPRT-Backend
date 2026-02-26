@@ -49,6 +49,7 @@ func (r *PatientRepository) SearchByQuery(ctx context.Context, queryText string)
 		SELECT
 			p.patient_uuid::text,
 			TRIM(CONCAT(COALESCE(p.prefix, ''), ' ', COALESCE(p.first_name, ''))) AS full_name,
+			COALESCE(p.op_ip_no, '') AS op_ip_no,
 			COALESCE(p.phone, '') AS phone_no,
 			TO_CHAR(p.created_at, 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS created_at,
 			COALESCE(p.created_by, '') AS created_by,
@@ -60,6 +61,7 @@ func (r *PatientRepository) SearchByQuery(ctx context.Context, queryText string)
 			$1 = ''
 			OR p.patient_uuid::text ILIKE '%' || $1 || '%'
 			OR p.first_name ILIKE '%' || $1 || '%'
+			OR COALESCE(p.op_ip_no, '') ILIKE '%' || $1 || '%'
 			OR COALESCE(p.phone, '') ILIKE '%' || $1 || '%'
 			OR CAST(p.patient_no AS TEXT) ILIKE '%' || $1 || '%'
 		)
@@ -79,6 +81,7 @@ func (r *PatientRepository) SearchByQuery(ctx context.Context, queryText string)
 		if err := rows.Scan(
 			&item.PatientID,
 			&item.FullName,
+			&item.OPIPNo,
 			&item.PhoneNo,
 			&item.CreatedAt,
 			&item.CreatedBy,

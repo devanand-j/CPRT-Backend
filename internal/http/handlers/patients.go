@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -55,6 +56,11 @@ func (h *PatientHandler) Register(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "age must be greater than or equal to 0")
 	}
 
+	ageUnit, err := normalizeAgeUnit(req.AgeUnit)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
 	phoneNo := strings.TrimSpace(req.PhoneNo)
 	if phoneNo == "" {
 		phoneNo = strings.TrimSpace(req.Phone)
@@ -65,7 +71,7 @@ func (h *PatientHandler) Register(c echo.Context) error {
 		FirstName:   strings.TrimSpace(req.FirstName),
 		Gender:      strings.TrimSpace(req.Gender),
 		Age:         req.Age,
-		AgeUnit:     strings.TrimSpace(req.AgeUnit),
+		AgeUnit:     ageUnit,
 		Phone:       phoneNo,
 		OPIPNo:      strings.TrimSpace(req.OPIPNo),
 		PatientType: strings.TrimSpace(req.PatientType),
@@ -169,12 +175,17 @@ func (h *PatientHandler) Update(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "age must be greater than or equal to 0")
 	}
 
+	ageUnit, err := normalizeAgeUnit(req.AgeUnit)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
 	profile, err := h.service.UpdateProfile(c.Request().Context(), patientUUID, domain.PatientProfileUpdate{
 		Prefix:      strings.TrimSpace(req.Prefix),
 		FirstName:   strings.TrimSpace(req.FirstName),
 		Gender:      strings.TrimSpace(req.Gender),
 		Age:         req.Age,
-		AgeUnit:     strings.TrimSpace(req.AgeUnit),
+		AgeUnit:     ageUnit,
 		PhoneNo:     strings.TrimSpace(req.PhoneNo),
 		PatientType: strings.TrimSpace(req.PatientType),
 		Status:      strings.TrimSpace(req.Status),
@@ -202,4 +213,22 @@ func (h *PatientHandler) SearchByPatientNo(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, results)
+}
+
+func normalizeAgeUnit(value string) (string, error) {
+	v := strings.ToLower(strings.TrimSpace(value))
+	if v == "" {
+		return "Yrs", nil
+	}
+
+	switch v {
+	case "yrs", "yr", "year", "years":
+		return "Yrs", nil
+	case "mon", "month", "months":
+		return "Mon", nil
+	case "days", "day":
+		return "Days", nil
+	default:
+		return "", errors.New("age_unit must be one of: Yrs, Mon, Days")
+	}
 }
