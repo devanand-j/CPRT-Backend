@@ -1,0 +1,509 @@
+{
+  "info": {
+    "name": "CPRT LIS API - Full Coverage",
+    "description": "Includes 5-role login payloads and all known endpoints across Modules 1-4 plus additional router endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" },
+    { "key": "userId", "value": "USR-10828" },
+    { "key": "patientId", "value": "PAT-UUID-0001" },
+    { "key": "billId", "value": "BILL-UUID-99" },
+    { "key": "orderId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Module 1 - Identity & Auth",
+      "item": [
+        {
+          "name": "POST /api/auth/login (Super Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login_id\": \"superadmin\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "if (Array.isArray(body) && body[0] && body[0].token) { pm.collectionVariables.set('token', body[0].token); }",
+                  "if (Array.isArray(body) && body[0] && body[0].user && body[0].user.user_id) { pm.collectionVariables.set('userId', body[0].user.user_id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/login (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login_id\": \"admin\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/login (Doctor)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login_id\": \"doctor1\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/login (Receptionist)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login_id\": \"receptionist1\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/login (Technician)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login_id\": \"tech1\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/users/:userId",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Inactive\",\n  \"account_group_id\": 4,\n  \"updated_by\": \"USR-10827\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Module 2 - Patient Management",
+      "item": [
+        {
+          "name": "POST /api/patients/register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prefix\": \"Mr.\",\n  \"first_name\": \"John Doe\",\n  \"gender\": \"Male\",\n  \"age\": 25,\n  \"age_unit\": \"Yrs\",\n  \"phone_no\": \"9876543210\",\n  \"op_ip_no\": \"OP-1002\",\n  \"patient_type\": \"Out Patients\",\n  \"created_by\": \"USR-10827\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients", "register"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (Array.isArray(body) && body[0] && body[0].data && body[0].data.patient_id) { pm.collectionVariables.set('patientId', body[0].data.patient_id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/patients/search?query=9876543210",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/search?query=9876543210",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients", "search"],
+              "query": [{ "key": "query", "value": "9876543210" }]
+            }
+          }
+        },
+        {
+          "name": "GET /api/patients/:patientId/history",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/{{patientId}}/history",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients", "{{patientId}}", "history"]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/patients/:patientId",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Johnathan Doe\",\n  \"phone_no\": \"9000000000\",\n  \"updated_by\": \"USR-10827\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/{{patientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients", "{{patientId}}"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/patients (extra)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prefix\": \"Mr.\",\n  \"first_name\": \"John Doe\",\n  \"gender\": \"Male\",\n  \"age\": 25,\n  \"age_unit\": \"Yrs\",\n  \"phone_no\": \"9876543210\",\n  \"op_ip_no\": \"OP-1002\",\n  \"patient_type\": \"Out Patients\",\n  \"created_by\": \"USR-10827\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/patients",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/patients/:id (extra)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/{{patientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients", "{{patientId}}"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/patients (extra)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "patients"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Module 3 - Billing & Financials",
+      "item": [
+        {
+          "name": "POST /api/billing/new",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": \"PAT-UUID-0001\",\n  \"referred_by_id\": \"USR-10827\",\n  \"hospital_name\": \"SDS TRC\",\n  \"bill_type\": \"Cash Bill\",\n  \"services\": [\n    {\n      \"service_id\": 1328,\n      \"service_code\": \"1328\",\n      \"service_name\": \"LIVER FUNCTION TEST\",\n      \"rate\": 500.00\n    },\n    {\n      \"service_id\": 1365,\n      \"service_code\": \"1365\",\n      \"service_name\": \"COMPLETE BLOOD COUNT\",\n      \"rate\": 300.00\n    }\n  ],\n  \"discount_amt\": 50.00,\n  \"tax_percent\": 5.0,\n  \"received_amt\": 500.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/billing/new",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "billing", "new"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (Array.isArray(body) && body[0] && body[0].data && body[0].data.bill_id) { pm.collectionVariables.set('billId', body[0].data.bill_id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/billing/services",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/billing/services",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "billing", "services"]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/billing/:billId/payment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"additional_received\": 287.50,\n  \"updated_by\": \"USR-10827\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/billing/{{billId}}/payment",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "billing", "{{billId}}", "payment"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/billing/bills (extra)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": 1,\n  \"visit_id\": null,\n  \"doctor_id\": null,\n  \"total_amount\": 1200,\n  \"discount\": 100,\n  \"tax\": 50,\n  \"net_amount\": 1150,\n  \"status\": \"DRAFT\",\n  \"payment_mode\": \"CASH\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/billing/bills",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "billing", "bills"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/billing/bills/:id/items (extra)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_id\": 1,\n  \"qty\": 1,\n  \"unit_price\": 1150\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/billing/bills/{{billId}}/items",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "billing", "bills", "{{billId}}", "items"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Module 4 - LIMS Workflow",
+      "item": [
+        {
+          "name": "PATCH /api/lab/sample-collection/:billId",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specimen_type\": \"WB-EDTA\",\n  \"worksheet_no\": \"WS-502\",\n  \"collected_by\": \"USR-10827\",\n  \"collection_date\": \"2026-02-26T14:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lab/sample-collection/{{billId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "lab", "sample-collection", "{{billId}}"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/lab/results/verify",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bill_id\": \"BILL-UUID-99\",\n  \"test_results\": [\n    {\n      \"param_id\": \"P101\",\n      \"param_name\": \"HEMOGLOBIN\",\n      \"value\": \"14.5\",\n      \"is_abnormal\": false\n    },\n    {\n      \"param_id\": \"P102\",\n      \"param_name\": \"RBC COUNT\",\n      \"value\": \"3.2\",\n      \"is_abnormal\": true\n    }\n  ],\n  \"verified_by\": \"USR-10828\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lab/results/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "lab", "results", "verify"]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/lab/results/certify/:billId",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"certified_by\": \"USR-DOC-001\",\n  \"remarks\": \"Clinically correlated.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lab/results/certify/{{billId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "lab", "results", "certify", "{{billId}}"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/lab/reports/:billId",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/lab/reports/{{billId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "lab", "reports", "{{billId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extra Router Endpoints",
+      "item": [
+        {
+          "name": "POST /api/orders",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bill_id\": 1,\n  \"patient_id\": 1,\n  \"visit_id\": null,\n  \"status\": \"PENDING\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/orders/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"VERIFIED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "{{orderId}}", "status"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -29,13 +29,16 @@ func main() {
 	patientRepo := postgres.NewPatientRepository(pool)
 	billingRepo := postgres.NewBillingRepository(pool)
 	orderRepo := postgres.NewOrderRepository(pool)
+	labRepo := postgres.NewLabRepository(pool)
 
 	authService := service.NewAuthService(userRepo, cfg.JWTSecret, cfg.JWTIssuer, cfg.JWTTTLMinutes)
+	userService := service.NewUserService(userRepo)
 	patientService := service.NewPatientService(patientRepo)
 	billingService := service.NewBillingService(billingRepo)
 	orderService := service.NewOrderService(orderRepo)
+	labService := service.NewLabService(labRepo)
 
-	handlers := apphttp.NewHandlers(authService, patientService, billingService, orderService, cfg)
+	handlers := apphttp.NewHandlers(authService, userService, patientService, billingService, orderService, labService, cfg)
 	e := apphttp.NewRouter(handlers)
 
 	server := &http.Server{

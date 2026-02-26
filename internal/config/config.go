@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/joho/godotenv"
@@ -17,7 +18,7 @@ type Config struct {
 }
 
 func Load() Config {
-	_ = godotenv.Load()
+	loadDotEnv()
 
 	port := getEnv("PORT", "8080")
 	dbURL := getEnv("DATABASE_URL", "")
@@ -41,6 +42,32 @@ func Load() Config {
 		JWTSecret:     jwtSecret,
 		JWTIssuer:     jwtIssuer,
 		JWTTTLMinutes: ttlMinutes,
+	}
+}
+
+func loadDotEnv() {
+	if err := godotenv.Load(); err == nil {
+		return
+	}
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		return
+	}
+
+	current := cwd
+	for {
+		envPath := filepath.Join(current, ".env")
+		if _, statErr := os.Stat(envPath); statErr == nil {
+			_ = godotenv.Overload(envPath)
+			return
+		}
+
+		parent := filepath.Dir(current)
+		if parent == current {
+			return
+		}
+		current = parent
 	}
 }
 

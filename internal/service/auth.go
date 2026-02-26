@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"cprt-lis/internal/domain"
@@ -38,11 +39,28 @@ func (s *AuthService) Login(ctx context.Context, username, password string) (str
 		return "", domain.User{}, errors.New("invalid credentials")
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
-		Issuer:    s.jwtIssuer,
-		Subject:   user.UserUUID,
-		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.jwtTTL)),
+	if strings.EqualFold(user.Status, "inactive") {
+		return "", domain.User{}, errors.New("user inactive")
+	}
+
+	role := user.GroupCode
+	if role == "" {
+		role = user.Role
+	}
+
+	now := time.Now()
+	var groupID any
+	if user.GroupID != nil {
+		groupID = *user.GroupID
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss":      s.jwtIssuer,
+		"sub":      user.UserUUID,
+		"iat":      now.Unix(),
+		"exp":      now.Add(s.jwtTTL).Unix(),
+		"role":     role,
+		"group_id": groupID,
 	})
 
 	signed, err := token.SignedString(s.jwtSecret)
