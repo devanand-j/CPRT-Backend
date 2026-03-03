@@ -1,0 +1,53 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Authenticate with Google Cloud (WIF)
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOYER_SERVICE_ACCOUNT }}
+
+      - name: Set up gcloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Configure Docker to use Artifact Registry
+        run: |
+          gcloud auth configure-docker asia-south1-docker.pkg.dev
+
+      - name: Build Docker image
+        run: |
+          docker build -t asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cprt/backend:dev .
+
+      - name: Push Docker image to Artifact Registry
+        run: |
+          docker push asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cprt/backend:dev
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy cprt-api-dev \
+            --image=asia-south1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cprt/backend:dev \
+            --region asia-south1 \
+            --platform managed \
+            --allow-unauthenticated \
+            --service-account=${{ secrets.GCP_DEPLOYER_SERVICE_ACCOUNT }} \
+            --max-instances 1 \
+            --min-instances 0 \
+            --update-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
+            --update-env-vars "JWT_SECRET=${{ secrets.JWT_SECRET }}"
