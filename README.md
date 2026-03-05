@@ -8,7 +8,7 @@ Laboratory Information System (LIS) REST API built with **Go**, **Echo** and **P
 
 | Layer | Technology |
 |---|---|
-| Language | Go 1.24+ |
+| Language | Go 1.25+ |
 | HTTP Framework | Echo v4 |
 | Database | PostgreSQL 13+ |
 | ORM / Query | pgx v5 (raw SQL) |
@@ -20,7 +20,7 @@ Laboratory Information System (LIS) REST API built with **Go**, **Echo** and **P
 
 ## Prerequisites
 
-- Go 1.24+
+- Go 1.25+
 - PostgreSQL 13+
 - `swag` CLI — install once:
 
