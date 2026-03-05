@@ -44,10 +44,6 @@ func main() {
 	}
 	defer pool.Close()
 
-	if err := db.RunMigrations(cfg.DatabaseURL, "file://migrations"); err != nil {
-		log.Fatalf("migrations failed: %v", err)
-	}
-
 	userRepo := postgres.NewUserRepository(pool)
 	patientRepo := postgres.NewPatientRepository(pool)
 	billingRepo := postgres.NewBillingRepository(pool)
@@ -72,12 +68,20 @@ func main() {
 		Handler:      e,
 	}
 
+	// Start the HTTP server first so Cloud Run's startup probe can reach the
+	// port immediately. Migrations run after the server is already listening.
 	go func() {
 		log.Printf("server listening on :%s", cfg.Port)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("server error: %v", err)
 		}
 	}()
+
+	// Run migrations after server is already accepting connections.
+	// Failure is logged as a warning so the server keeps running.
+	if err := db.RunMigrations(cfg.DatabaseURL, "file://migrations"); err != nil {
+		log.Printf("WARNING: migrations failed: %v", err)
+	}
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
