@@ -14,8 +14,27 @@ import (
 	apphttp "cprt-lis/internal/http"
 	"cprt-lis/internal/repository/postgres"
 	"cprt-lis/internal/service"
+
+	// Registers generated Swagger docs so the /swagger/* endpoint can serve them.
+	_ "cprt-lis/docs"
 )
 
+// @title        CPRT LIS API
+// @version      1.0
+// @description  Laboratory Information System (LIS) REST API for CPRT.
+// @description
+// @description  ## Authentication
+// @description  All endpoints except `/health` and `/api/auth/login` require a **Bearer JWT**.
+// @description  After logging in, copy the `token` value and click **Authorize** above, then enter:
+// @description  `Bearer <your-token>`
+//
+// @host      localhost:8080
+// @BasePath  /
+//
+// @securityDefinitions.apikey BearerAuth
+// @in                        header
+// @name                      Authorization
+// @description               Enter: **Bearer &lt;JWT token&gt;**
 func main() {
 	cfg := config.Load()
 
@@ -24,6 +43,10 @@ func main() {
 		log.Fatalf("db connection failed: %v", err)
 	}
 	defer pool.Close()
+
+	if err := db.RunMigrations(cfg.DatabaseURL, "file://migrations"); err != nil {
+		log.Fatalf("migrations failed: %v", err)
+	}
 
 	userRepo := postgres.NewUserRepository(pool)
 	patientRepo := postgres.NewPatientRepository(pool)

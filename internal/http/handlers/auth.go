@@ -15,14 +15,51 @@ func NewAuthHandler(service AuthService) *AuthHandler {
 	return &AuthHandler{service: service}
 }
 
-type loginRequest struct {
-	LoginID  string `json:"login_id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+// LoginRequest is the payload for POST /api/auth/login.
+type LoginRequest struct {
+	// Use either login_id or username — both are accepted
+	LoginID  string `json:"login_id" `
+	Username string `json:"username" `
+	Password string `json:"password" `
 }
 
+// LoginUserInfo is the authenticated user block returned inside LoginResponse.
+type LoginUserInfo struct {
+	UserID           string `json:"user_id"           `
+	UserName         string `json:"user_name"         `
+	AccountGroupCode string `json:"account_group_code"`
+	AccountGroupName string `json:"account_group_name"`
+	// Role is one of: SUPER_ADMIN, ADMIN, DOCTOR, TECHNICIAN
+	Role   string `json:"role"  `
+	Status string `json:"status"`
+}
+
+// LoginResponse is each element of the array returned on a successful login.
+type LoginResponse struct {
+	Status string        `json:"status"`
+	Token  string        `json:"token" `
+	User   LoginUserInfo `json:"user"`
+	// Permissions granted to this role
+	// Possible values: PATIENT_READ, PATIENT_WRITE, BILLING_READ, BILLING_WRITE,
+	//                  LAB_VERIFY, LAB_CERTIFY, USER_MANAGE
+	Permissions []string `json:"permissions"`
+}
+
+// Login authenticates a user and returns a JWT bearer token.
+//
+//	@Summary      User Login
+//	@Description  Authenticate with login_id (or username) + password.
+//	@Description  Copy the returned token and pass it as `Authorization: Bearer <token>` in every secured request.
+//	@Tags         Auth
+//	@Accept       json
+//	@Produce      json
+//	@Param        body  body     LoginRequest   true  "Login credentials — use login_id or username interchangeably"
+//	@Success      200   {array}  LoginResponse  "Single-element array — token, user info and role permissions"
+//	@Failure      400   {object} ErrorResponse  "Bad request — missing or malformed JSON body"
+//	@Failure      401   {object} ErrorResponse  "Unauthorized — wrong login_id/username or password"
+//	@Router       /api/auth/login [post]
 func (h *AuthHandler) Login(c echo.Context) error {
-	var req loginRequest
+	var req LoginRequest
 	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid payload")
 	}
@@ -78,3 +115,4 @@ func permissionsForRole(role string) []string {
 func toUserID(id string) string {
 	return "USR-" + strings.TrimSpace(id)
 }
+

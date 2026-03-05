@@ -1,0 +1,1397 @@
+basePath: /
+definitions:
+  domain.BillPaymentUpdate:
+    properties:
+      balance_amt:
+        type: number
+      bill_id:
+        type: string
+      bill_no:
+        type: integer
+      net_billed_amt:
+        type: number
+      payment_mode:
+        type: string
+      payment_status:
+        type: string
+      received_amt:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  domain.LabBill:
+    properties:
+      balanceAmount:
+        format: float64
+        type: number
+      billNo:
+        format: int64
+        type: integer
+      billUUID:
+        type: string
+      createdAt:
+        type: string
+      discount:
+        format: float64
+        type: number
+      doctorID:
+        format: int64
+        type: integer
+      hospitalName:
+        type: string
+      id:
+        format: int64
+        type: integer
+      netAmount:
+        format: float64
+        type: number
+      patientID:
+        format: int64
+        type: integer
+      patientUUID:
+        type: string
+      paymentMode:
+        type: string
+      paymentStatus:
+        type: string
+      receivedAmount:
+        format: float64
+        type: number
+      referredBy:
+        type: string
+      status:
+        type: string
+      tax:
+        format: float64
+        type: number
+      totalAmount:
+        format: float64
+        type: number
+      visitID:
+        format: int64
+        type: integer
+    type: object
+  domain.LabOrder:
+    properties:
+      billID:
+        format: int64
+        type: integer
+      createdAt:
+        type: string
+      id:
+        format: int64
+        type: integer
+      orderUUID:
+        type: string
+      patientID:
+        format: int64
+        type: integer
+      status:
+        type: string
+      visitID:
+        format: int64
+        type: integer
+    type: object
+  domain.LabReportResponse:
+    properties:
+      bill_id:
+        type: string
+      certified_by:
+        type: string
+      patient_id:
+        type: string
+      patient_name:
+        type: string
+      report_status:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/domain.LabReportResult'
+        type: array
+      verification_by:
+        type: string
+    type: object
+  domain.LabReportResult:
+    properties:
+      flag:
+        type: string
+      param_name:
+        type: string
+      reference:
+        type: string
+      result_value:
+        type: string
+    type: object
+  domain.LabService:
+    properties:
+      department:
+        type: string
+      rate:
+        type: number
+      service_id:
+        type: integer
+      service_name:
+        type: string
+      status:
+        type: string
+    type: object
+  domain.PatientHistoryItem:
+    properties:
+      bill_date:
+        type: string
+      bill_no:
+        type: integer
+      rate:
+        type: number
+      service_name:
+        type: string
+      status:
+        type: string
+    type: object
+  domain.PatientProfile:
+    properties:
+      age:
+        type: integer
+      age_unit:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      patient_id:
+        type: string
+      patient_type:
+        type: string
+      phone_no:
+        type: string
+      prefix:
+        type: string
+      status:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  domain.PatientSearchResult:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      full_name:
+        type: string
+      op_ip_no:
+        type: string
+      patient_id:
+        type: string
+      patient_no:
+        type: integer
+      patient_type:
+        type: string
+      phone_no:
+        type: string
+      status:
+        type: string
+    type: object
+  domain.ResultCertificationResponse:
+    properties:
+      bill_id:
+        type: string
+      certification_remarks:
+        type: string
+      certification_status:
+        type: string
+      certified_by:
+        type: string
+      dispatch_ready:
+        type: boolean
+    type: object
+  domain.ResultVerificationParam:
+    properties:
+      is_abnormal:
+        type: boolean
+      param_id:
+        type: string
+      param_name:
+        type: string
+      result_value:
+        type: string
+    type: object
+  domain.ResultVerificationResponse:
+    properties:
+      bill_id:
+        type: string
+      result_count:
+        type: integer
+      verification_datetime:
+        type: string
+      verification_status:
+        type: string
+      verified_by:
+        type: string
+    type: object
+  domain.SampleCollectionResponse:
+    properties:
+      bill_id:
+        type: string
+      collected_by:
+        type: string
+      collection_datetime:
+        type: string
+      collection_status:
+        type: string
+      sample_no:
+        type: string
+      worksheet_no:
+        type: string
+    type: object
+  handlers.AddBillItemRequest:
+    properties:
+      qty:
+        type: integer
+      service_id:
+        type: integer
+      unit_price:
+        type: number
+    type: object
+  handlers.CertifyResultsRequest:
+    properties:
+      certified_by:
+        description: Login ID or name of the certifying doctor — required
+        type: string
+      remarks:
+        type: string
+    type: object
+  handlers.CreateBillRequest:
+    properties:
+      discount:
+        type: number
+      doctor_id:
+        type: integer
+      net_amount:
+        type: number
+      patient_id:
+        description: Internal numeric patient ID (from patients table)
+        type: integer
+      payment_mode:
+        description: Cash | Card | UPI | Online
+        type: string
+      status:
+        description: Pending | Paid | Partial
+        type: string
+      tax:
+        type: number
+      total_amount:
+        type: number
+      visit_id:
+        type: integer
+    type: object
+  handlers.CreateOrderRequest:
+    properties:
+      bill_id:
+        description: Numeric bill ID returned by POST /api/billing/new (bill_no field)
+        type: integer
+      patient_id:
+        description: Internal numeric patient ID
+        type: integer
+      status:
+        description: Pending | InProgress | Completed
+        type: string
+      visit_id:
+        type: integer
+    type: object
+  handlers.CreatePatientRequest:
+    properties:
+      age:
+        description: Non-negative integer
+        type: integer
+      age_unit:
+        description: Yrs | Mon | Days
+        type: string
+      created_by:
+        type: string
+      first_name:
+        description: Patient first (and last) name — required
+        type: string
+      gender:
+        description: M, F or Other
+        type: string
+      op_ip_no:
+        description: OP/IP registration number from the hospital
+        type: string
+      patient_type:
+        description: Outpatient | Inpatient
+        type: string
+      phone:
+        description: Alias for phone_no — either field is accepted
+        type: string
+      phone_no:
+        description: Primary phone field
+        type: string
+      prefix:
+        description: Title / salutation
+        type: string
+      status:
+        type: string
+    type: object
+  handlers.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  handlers.GenerateBillRequest:
+    properties:
+      discount_amt:
+        description: Flat discount amount in currency units
+        type: number
+      hospital_name:
+        type: string
+      patient_id:
+        description: Patient UUID returned by POST /api/patients/register
+        type: string
+      received_amt:
+        description: Amount collected upfront
+        type: number
+      referred_by:
+        type: string
+      services:
+        description: At least one service is required
+        items:
+          $ref: '#/definitions/handlers.GenerateBillServiceItem'
+        type: array
+      tax_percent:
+        description: Tax percentage (e.g. 5 = 5%)
+        type: number
+    type: object
+  handlers.GenerateBillResponse:
+    properties:
+      balance_amt:
+        type: number
+      bill_id:
+        description: Bill UUID
+        type: string
+      bill_no:
+        type: integer
+      created_at:
+        type: string
+      discount_amt:
+        type: number
+      net_billed_amt:
+        type: number
+      payment_status:
+        description: Paid | Pending | Partial
+        type: string
+      received_amt:
+        type: number
+      tax_amt:
+        type: number
+      total_billed_amt:
+        type: number
+    type: object
+  handlers.GenerateBillServiceItem:
+    properties:
+      rate:
+        type: number
+      service_id:
+        description: Service UUID or code (from GET /api/billing/services)
+        type: string
+      service_name:
+        type: string
+    type: object
+  handlers.LoginRequest:
+    properties:
+      login_id:
+        description: Use either login_id or username — both are accepted
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  handlers.LoginResponse:
+    properties:
+      permissions:
+        description: |-
+          Permissions granted to this role
+          Possible values: PATIENT_READ, PATIENT_WRITE, BILLING_READ, BILLING_WRITE,
+                           LAB_VERIFY, LAB_CERTIFY, USER_MANAGE
+        items:
+          type: string
+        type: array
+      status:
+        type: string
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/handlers.LoginUserInfo'
+    type: object
+  handlers.LoginUserInfo:
+    properties:
+      account_group_code:
+        type: string
+      account_group_name:
+        type: string
+      role:
+        description: 'Role is one of: SUPER_ADMIN, ADMIN, DOCTOR, TECHNICIAN'
+        type: string
+      status:
+        type: string
+      user_id:
+        type: string
+      user_name:
+        type: string
+    type: object
+  handlers.PatientRegisterResponse:
+    properties:
+      created_at:
+        type: string
+      full_name:
+        type: string
+      patient_id:
+        description: UUID assigned to the patient
+        type: string
+      patient_no:
+        type: integer
+      registration_date:
+        type: string
+      status:
+        type: string
+    type: object
+  handlers.SampleCollectionRequest:
+    properties:
+      collected_by:
+        description: Login ID or name of the staff who collected the sample — required
+        type: string
+      sample_no:
+        description: Unique sample bar-code / tube number — required
+        type: string
+      worksheet_no:
+        description: Optional worksheet / register number
+        type: string
+    type: object
+  handlers.UpdatePatientRequest:
+    properties:
+      age:
+        type: integer
+      age_unit:
+        description: Yrs | Mon | Days
+        type: string
+      first_name:
+        type: string
+      gender:
+        description: M, F or Other
+        type: string
+      patient_type:
+        description: Outpatient | Inpatient
+        type: string
+      phone_no:
+        type: string
+      prefix:
+        type: string
+      status:
+        description: Active | Inactive
+        type: string
+      updated_by:
+        type: string
+    type: object
+  handlers.UpdatePaymentRequest:
+    properties:
+      payment_mode:
+        description: Cash | Card | UPI | Online
+        type: string
+      received_amt:
+        type: number
+    type: object
+  handlers.UpdateStatusRequest:
+    properties:
+      status:
+        description: Pending | InProgress | Completed
+        type: string
+    type: object
+  handlers.UpdateUserRequest:
+    properties:
+      account_group_id:
+        description: Account group ID (from account_groups table)
+        type: integer
+      password:
+        description: Plain-text password — will be bcrypt-hashed server-side
+        type: string
+      password_hash:
+        description: Pre-hashed password — use only if you manage hashing yourself
+        type: string
+      status:
+        description: Active | Inactive
+        type: string
+      updated_by:
+        type: string
+    type: object
+  handlers.UserResponse:
+    properties:
+      account_group:
+        description: Account group name e.g. Doctor, Admin, Technician
+        type: string
+      created_at:
+        type: string
+      last_login:
+        type: string
+      login_id:
+        type: string
+      status:
+        description: Active | Inactive
+        type: string
+      user_id:
+        type: string
+      user_name:
+        type: string
+    type: object
+  handlers.VerifyResultsRequest:
+    properties:
+      bill_id:
+        description: Numeric bill ID
+        type: integer
+      params:
+        description: One entry per test parameter
+        items:
+          $ref: '#/definitions/domain.ResultVerificationParam'
+        type: array
+      verified_by:
+        description: Login ID or name of the verifying staff — required
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: |-
+    Laboratory Information System (LIS) REST API for CPRT.
+
+    ## Authentication
+    All endpoints except `/health` and `/api/auth/login` require a **Bearer JWT**.
+    After logging in, copy the `token` value and click **Authorize** above, then enter:
+    `Bearer <your-token>`
+
+    ## Typical workflow
+    1. **Login** → `POST /api/auth/login` → get token
+    2. **Register patient** → `POST /api/patients/register` → get patient_id
+    3. **Generate bill** → `POST /api/billing/new` (use service_ids from `GET /api/billing/services`)
+    4. **Create order** → `POST /api/orders`
+    5. **Sample collection** → `PATCH /api/lab/sample-collection/{billId}`
+    6. **Verify results** → `POST /api/lab/results/verify`
+    7. **Certify report** → `PATCH /api/lab/results/certify/{billId}`
+    8. **Get report** → `GET /api/lab/reports/{billId}`
+  title: CPRT LIS API
+  version: "1.0"
+paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Authenticate with login_id (or username) + password.
+        Copy the returned token and pass it as `Authorization: Bearer <token>` in every secured request.
+      parameters:
+      - description: Login credentials — use login_id or username interchangeably
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single-element array — token, user info and role permissions
+          schema:
+            items:
+              $ref: '#/definitions/handlers.LoginResponse'
+            type: array
+        "400":
+          description: Bad request — missing or malformed JSON body
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Unauthorized — wrong login_id/username or password
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: User Login
+      tags:
+      - Auth
+  /api/billing/{billId}/payment:
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Records a payment received against an existing bill and recalculates balance and payment_status.
+        payment_status will be: Paid (balance=0), Partial (balance>0), or Pending (received=0).
+      parameters:
+      - description: Numeric bill ID
+        in: path
+        name: billId
+        required: true
+        type: integer
+      - description: Payment details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdatePaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single-element array with updated payment summary
+          schema:
+            items:
+              $ref: '#/definitions/domain.BillPaymentUpdate'
+            type: array
+        "400":
+          description: invalid bill id or payload
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update bill payment
+      tags:
+      - Billing
+  /api/billing/bills:
+    post:
+      consumes:
+      - application/json
+      description: Creates a bill record directly. Prefer POST /api/billing/new for
+        the full workflow with services, discount and tax.
+      parameters:
+      - description: Raw bill data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateBillRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created bill record (full domain object)
+          schema:
+            $ref: '#/definitions/domain.LabBill'
+        "400":
+          description: invalid payload
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create bill (low-level)
+      tags:
+      - Billing
+  /api/billing/bills/{id}/items:
+    post:
+      consumes:
+      - application/json
+      description: Appends a service/test line item to the bill specified by :id.
+      parameters:
+      - description: Numeric bill ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Service item details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.AddBillItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"status\": \"added\"}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: invalid bill id or payload
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add item to bill
+      tags:
+      - Billing
+  /api/billing/new:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Creates a bill with one or more services, applies discount and tax, and records the received amount.
+        patient_id must be the UUID returned by POST /api/patients/register.
+        service_id values come from GET /api/billing/services.
+        The response includes bill_no, net amount, balance, and payment_status (Paid/Pending/Partial).
+      parameters:
+      - description: Bill generation payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.GenerateBillRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Single-element array with full bill summary
+          schema:
+            items:
+              $ref: '#/definitions/handlers.GenerateBillResponse'
+            type: array
+        "400":
+          description: patient_id is required or services cannot be empty
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Generate bill (primary workflow)
+      tags:
+      - Billing
+  /api/billing/services:
+    get:
+      description: |-
+        Returns all active services with their ID, name, rate and department.
+        Use the service_id values when generating a bill via POST /api/billing/new.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of available services
+          schema:
+            items:
+              $ref: '#/definitions/domain.LabService'
+            type: array
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List lab services
+      tags:
+      - Billing
+  /api/lab/reports/{billId}:
+    get:
+      description: |-
+        Returns the complete lab report for a certified bill, including patient info, results, flags and certifier.
+        Only available after the bill has been certified via PATCH /api/lab/results/certify/:billId.
+      parameters:
+      - description: Numeric bill ID
+        in: path
+        name: billId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single-element array with the full report
+          schema:
+            items:
+              $ref: '#/definitions/domain.LabReportResponse'
+            type: array
+        "400":
+          description: invalid bill id
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get lab report
+      tags:
+      - Lab
+  /api/lab/results/certify/{billId}:
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Marks the bill as certified by a doctor, making the report ready for dispatch.
+        step 3 (final) of the lab workflow. Must be called after VerifyResults.
+      parameters:
+      - description: Numeric bill ID
+        in: path
+        name: billId
+        required: true
+        type: integer
+      - description: Certifier identity and optional remarks
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CertifyResultsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single-element array confirming certification and dispatch
+            readiness
+          schema:
+            items:
+              $ref: '#/definitions/domain.ResultCertificationResponse'
+            type: array
+        "400":
+          description: invalid bill id or certified_by missing
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Certify lab results
+      tags:
+      - Lab
+  /api/lab/results/verify:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Accepts an array of test parameter results (value + abnormal flag) and marks the bill as verified.
+        step 2 of the lab workflow. Each params entry needs param_id and result_value at minimum.
+      parameters:
+      - description: Result parameters and verifier identity
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.VerifyResultsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single-element array confirming verification
+          schema:
+            items:
+              $ref: '#/definitions/domain.ResultVerificationResponse'
+            type: array
+        "400":
+          description: bill_id required, params empty, or verified_by missing
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Verify lab results
+      tags:
+      - Lab
+  /api/lab/sample-collection/{billId}:
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Records that the sample for the given bill has been collected. Generates a sample ID and worksheet linkage.
+        step 1 of the lab workflow: Billing → Sample Collection → Verify → Certify → Report.
+      parameters:
+      - description: Numeric bill ID
+        in: path
+        name: billId
+        required: true
+        type: integer
+      - description: Sample collection details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.SampleCollectionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single-element array confirming collection
+          schema:
+            items:
+              $ref: '#/definitions/domain.SampleCollectionResponse'
+            type: array
+        "400":
+          description: invalid bill id, or sample_no / collected_by missing
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Mark sample collected
+      tags:
+      - Lab
+  /api/orders:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Creates a lab workflow order linked to an existing bill and patient.
+        Typically called right after a bill is generated to trigger sample collection.
+      parameters:
+      - description: Order details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created order record
+          schema:
+            $ref: '#/definitions/domain.LabOrder'
+        "400":
+          description: invalid payload
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create lab order
+      tags:
+      - Orders
+  /api/orders/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Updates the workflow status of the specified order.
+        Valid statuses: Pending → InProgress → Completed.
+      parameters:
+      - description: Numeric order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New status value
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{\"status\": \"updated\"}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: invalid order id or payload
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update order status
+      tags:
+      - Orders
+  /api/patients:
+    get:
+      description: |-
+        Full-text search across patient name, phone, and OP/IP no. Returns matching PatientSearchResult records.
+        Pass the search term as ?query= or ?search= — both are accepted.
+      parameters:
+      - description: Free-text search term
+        example: Rahul
+        in: query
+        name: query
+        type: string
+      - description: Alias for query param
+        example: Rahul
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Matched patients (empty array if none found)
+          schema:
+            items:
+              $ref: '#/definitions/domain.PatientSearchResult'
+            type: array
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Search patients
+      tags:
+      - Patients
+    post:
+      consumes:
+      - application/json
+      description: Identical to POST /api/patients/register. Kept for backward compatibility.
+      parameters:
+      - description: Patient details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreatePatientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Single-element array with the created patient record
+          schema:
+            items:
+              $ref: '#/definitions/handlers.PatientRegisterResponse'
+            type: array
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create patient (alias)
+      tags:
+      - Patients
+  /api/patients/{id}:
+    get:
+      description: Returns an array of PatientHistoryItem records for the given patient
+        UUID.
+      parameters:
+      - description: Patient UUID
+        example: 550e8400-e29b-41d4-a716-446655440000
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bill-level history entries
+          schema:
+            items:
+              $ref: '#/definitions/domain.PatientHistoryItem'
+            type: array
+        "400":
+          description: patient id is required
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get patient history by UUID
+      tags:
+      - Patients
+  /api/patients/{patientId}:
+    patch:
+      consumes:
+      - application/json
+      description: Partially updates a patient record. Only the fields supplied in
+        the body are changed.
+      parameters:
+      - description: Patient UUID
+        in: path
+        name: patientId
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdatePatientRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single-element array with the updated patient profile
+          schema:
+            items:
+              $ref: '#/definitions/domain.PatientProfile'
+            type: array
+        "400":
+          description: Validation error — invalid age_unit etc.
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update patient
+      tags:
+      - Patients
+  /api/patients/{patientId}/history:
+    get:
+      description: Returns an array of PatientHistoryItem records (one per service/test
+        on each bill) for the given patient.
+      parameters:
+      - description: Patient UUID
+        example: 550e8400-e29b-41d4-a716-446655440000
+        in: path
+        name: patientId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: History entries — bill date, service, status and rate
+          schema:
+            items:
+              $ref: '#/definitions/domain.PatientHistoryItem'
+            type: array
+        "400":
+          description: patient id is required
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get patient history
+      tags:
+      - Patients
+  /api/patients/register:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Creates a new patient record and returns the assigned patient_id (UUID) and patient_no.
+        age_unit accepts: Yrs, Mon, Days (and common aliases like years, months, days).
+      parameters:
+      - description: Patient details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreatePatientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Single-element array with the created patient record
+          schema:
+            items:
+              $ref: '#/definitions/handlers.PatientRegisterResponse'
+            type: array
+        "400":
+          description: Validation error — e.g. first_name is required, invalid age_unit
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Register patient
+      tags:
+      - Patients
+  /api/users:
+    get:
+      description: Returns every user account. Requires SUPER_ADMIN or ADMIN role.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All user accounts
+          schema:
+            items:
+              $ref: '#/definitions/handlers.UserResponse'
+            type: array
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "403":
+          description: Insufficient role — need SUPER_ADMIN or ADMIN
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List all users
+      tags:
+      - Users
+  /api/users/{userId}:
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Partially updates a user account. Requires SUPER_ADMIN or ADMIN role.
+        Send only the fields you want to change. All fields are optional.
+        If both password and password_hash are supplied, password takes precedence (server will hash it).
+      parameters:
+      - description: User ID (raw DB value, not the USR- prefixed one)
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single-element array with update confirmation
+          schema:
+            items:
+              additionalProperties:
+                type: string
+              type: object
+            type: array
+        "400":
+          description: invalid id, invalid payload, or invalid status value
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "401":
+          description: Missing or invalid JWT
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "403":
+          description: Insufficient role
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Unexpected server error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - Users
+  /health:
+    get:
+      description: Returns {"status":"ok"} when the server is up and reachable.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Service is healthy
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - Health
+securityDefinitions:
+  BearerAuth:
+    description: 'Enter: **Bearer &lt;JWT token&gt;**'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

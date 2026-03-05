@@ -9,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 type Handlers struct {
@@ -42,6 +43,28 @@ func NewRouter(h Handlers) *echo.Echo {
 	e.Use(echoMiddleware.CORS())
 
 	e.GET("/health", h.Health.Ping)
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	e.GET("/redoc", func(c echo.Context) error {
+		html := `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CPRT LIS API – ReDoc</title>
+  <style>body { margin: 0; padding: 0; }</style>
+</head>
+<body>
+  <redoc spec-url="/swagger/doc.json"
+         expand-responses="200,201"
+         required-props-first="true"
+         hide-hostname="false"
+         path-in-middle-panel="true">
+  </redoc>
+  <script src="https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js"></script>
+</body>
+</html>`
+		return c.HTML(http.StatusOK, html)
+	})
 
 	api := e.Group("/api")
 

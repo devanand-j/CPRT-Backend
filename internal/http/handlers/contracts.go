@@ -42,3 +42,4 @@ type LabService interface {
 	CertifyResults(ctx context.Context, billID int64, certifiedBy, remarks string) (domain.ResultCertificationResponse, error)
 	GetReport(ctx context.Context, billID int64) (domain.LabReportResponse, error)
 }
+

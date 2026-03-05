@@ -10,11 +10,17 @@ COPY go.mod go.sum ./
 # Download all dependencies
 RUN go mod download
 
+# Install swag CLI for generating Swagger docs
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
 # Copy the source code
 COPY . .
 
-# Build the Go app for production
-RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd/api
+# Generate Swagger docs from annotations
+RUN swag init -g main.go -o ./docs --parseDependency --parseInternal
+
+# Build the Go app for production (main.go is now at root)
+RUN CGO_ENABLED=0 GOOS=linux go build -o server .
 
 # Final image using a minimal base
 FROM gcr.io/distroless/static:nonroot
