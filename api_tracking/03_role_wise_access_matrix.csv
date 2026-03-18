@@ -1,0 +1,23 @@
+Page,API Method & Route,SUPER_ADMIN,ADMIN,DOCTOR,TECHNICIAN,Auth Required,Remarks
+Health,GET /health,Y,Y,Y,Y,N,Public health check
+Identity & Auth,POST /api/auth/login,Y,Y,Y,Y,N,Public login route
+Identity & Auth,GET /api/users,Y,Y,N,N,Y,Restricted by RequireRole + policy guard
+Identity & Auth,PATCH /api/users/:userId,Y,Y,N,N,Y,Restricted by RequireRole + policy guard
+Patient Management,POST /api/patients/register,Y,Y,Y,Y,Y,Any authenticated role
+Patient Management,POST /api/patients,Y,Y,Y,Y,Y,Any authenticated role
+Patient Management,GET /api/patients/:id,Y,Y,Y,Y,Y,Any authenticated role
+Patient Management,GET /api/patients,Y,Y,Y,Y,Y,Any authenticated role
+Patient Management,GET /api/patients/search,Y,Y,Y,Y,Y,Any authenticated role
+Patient Management,GET /api/patients/:patientId/history,Y,Y,Y,Y,Y,Any authenticated role
+Patient Management,PATCH /api/patients/:patientId,Y,Y,Y,Y,Y,Any authenticated role
+Billing & Financials,POST /api/billing/new,Y,Y,Y,Y,Y,Any authenticated role
+Billing & Financials,POST /api/billing/bills,Y,Y,Y,Y,Y,Any authenticated role
+Billing & Financials,POST /api/billing/bills/:id/items,Y,Y,Y,Y,Y,Any authenticated role
+Billing & Financials,GET /api/billing/services,Y,Y,Y,Y,Y,Any authenticated role
+Billing & Financials,PATCH /api/billing/:billId/payment,Y,Y,Y,Y,Y,Any authenticated role
+Orders,POST /api/orders,Y,Y,Y,Y,Y,Any authenticated role
+Orders,PATCH /api/orders/:id/status,Y,Y,Y,Y,Y,Any authenticated role
+Lab Workflow,PATCH /api/lab/sample-collection/:billId,Y,Y,Y,Y,Y,Any authenticated role
+Lab Workflow,POST /api/lab/results/verify,Y,Y,Y,Y,Y,Any authenticated role
+Lab Workflow,PATCH /api/lab/results/certify/:billId,N,N,Y,N,Y,Doctor-only (RolePolicyGuard)
+Lab Workflow,GET /api/lab/reports/:billId,Y,Y,Y,Y,Y,Any authenticated role

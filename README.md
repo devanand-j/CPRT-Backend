@@ -160,3 +160,7 @@ The Docker build automatically regenerates Swagger docs and compiles the binary.
 ```
 
 > Full request/response schema for every endpoint is documented in Swagger UI / ReDoc.
+
+## Swagger / OpenAPI
+- Full OpenAPI 3.0 YAML spec is available in `swagger.yaml`.
+- Raw YAML spec route: `http://localhost:8080/swagger.yaml`.
